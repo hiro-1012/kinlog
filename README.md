@@ -52,8 +52,8 @@
 - レスポンシブ対応  
 
 # 開発環境
-・OS：Mac + ターミナル　
-・言語：HTML、CSS、JavaScript、Ruby  
-・フレームワーク：Ruby on Rails  
-・JSライブラリ：jQuery  
-・データベース：PostgreSQL
+- OS：Mac + ターミナル　
+- 言語：HTML、CSS、JavaScript、Ruby  
+- フレームワーク：Ruby on Rails  
+- JSライブラリ：jQuery  
+- データベース：PostgreSQL
