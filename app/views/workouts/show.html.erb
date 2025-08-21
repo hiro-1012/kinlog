@@ -1,0 +1,38 @@
+<h2><%= @workout.performed_on %> の記録</h2>
+<p>合計ボリューム: <%= @workout.total_volume.to_i %></p>
+
+<table>
+  <thead>
+    <tr><th>#</th><th>種目</th><th>部位</th><th>重量</th><th>回数</th><th>メモ</th></tr>
+  </thead>
+  <tbody>
+    <% @sets.each do |s| %>
+      <tr>
+        <td><%= s.set_order %></td>
+        <td><%= s.exercise.name %></td>
+        <td><%= s.exercise.category.name %></td>
+        <td><%= s.weight %> kg</td>
+        <td><%= s.reps %> 回</td>
+        <td><%= s.note %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% if user_signed_in? && @workout.user == current_user %>
+  <h3>セットを追加</h3>
+  <%= form_with model: [@workout, @set], local: true do |f| %>
+    <div>
+      <%= f.collection_select :exercise_id,
+            Exercise.includes(:category).order("categories.name, exercises.name"),
+            :id, :name, prompt: "種目を選択" %>
+    </div>
+    <div>重量 <%= f.number_field :weight, step: 0.5 %> kg</div>
+    <div>回数 <%= f.number_field :reps %></div>
+    <div>順番 <%= f.number_field :set_order %></div>
+    <div>メモ <%= f.text_field :note %></div>
+    <%= f.submit "追加" %>
+  <% end %>
+<% end %>
+
+<p><%= link_to "一覧へ戻る", workouts_path %></p>

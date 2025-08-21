@@ -1,0 +1,32 @@
+/* ヒーローセクション（画面一杯） */
+.hero {
+    min-height: calc(100vh - 0px); /* ヘッダーがあるなら - ヘッダー高さ */
+    padding: 64px 16px;
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+      /* 背景画像を使う場合は下を有効化
+      url("top-hero.jpg") center/cover no-repeat
+      */
+      radial-gradient(1200px 600px at 50% -10%, #0d6efd1a, transparent 60%),
+      radial-gradient(800px 400px at 10% 110%, #20c9971a, transparent 60%),
+      #0b0e14;
+    color: #fff;
+  }
+  
+  /* タイトル・リード */
+  .hero-title {
+    font-weight: 800;
+    letter-spacing: .02em;
+    font-size: clamp(28px, 5vw, 48px);
+  }
+  
+  .hero-lead {
+    opacity: .9;
+    font-size: clamp(14px, 2.5vw, 18px);
+    line-height: 1.7;
+  }
+  
+  /* .gap-2 互換（Bootstrap 5.3未満でも余白がほしい場合）*/
+  .gap-2 {
+    gap: .5rem;
+  }

@@ -1,0 +1,14 @@
+<h1>ワークアウト一覧</h1>
+<% if user_signed_in? %>
+  <p><%= link_to "新しい記録を作る", new_workout_path %></p>
+<% end %>
+
+<ul>
+  <% @workouts.each do |w| %>
+    <li>
+      <%= link_to w.performed_on, workout_path(w) %>
+      （<%= w.user.name.presence || w.user.email %>）
+      / 合計: <%= w.total_volume.to_i %>
+    </li>
+  <% end %>
+</ul>

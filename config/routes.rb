@@ -1,0 +1,41 @@
+Rails.application.routes.draw do
+  get 'home/index'
+  get 'exercises/index'
+  get 'categories/index'
+  get 'exercise_set/create'
+  get 'exercise_set/update'
+  get 'exercise_set/destroy'
+  get 'workouts/index'
+  get 'workouts/show'
+  get 'workouts/new'
+  get 'workouts/create'
+  get 'workouts/edit'
+  get 'workouts/update'
+  get 'workouts/destroy'
+
+  devise_for :users, controllers: {
+    sessions: 'users/sessions'
+  }
+
+  devise_scope :user do
+    post "users/guest_sign_in", to: "users/sessions#guest_sign_in", as: :guest_sign_in
+  end
+
+  root "home#index"
+
+  resources :workouts do
+    resources :exercise_sets, only: [:create, :update, :destroy]
+  end
+
+  resources :categories, only: [:index]
+  resources :exercises, only: [:index]
+
+  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+
+  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
+  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  get "up" => "rails/health#show", as: :rails_health_check
+
+  # Defines the root path route ("/")
+  # root "posts#index"
+end
