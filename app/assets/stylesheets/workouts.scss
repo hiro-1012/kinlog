@@ -1,0 +1,40 @@
+/* カレンダー（白基調） */
+.calendar-table {
+  background: #fff;
+  border-color: #e9ecef;
+}
+.calendar-table th, .calendar-table td {
+  vertical-align: top;
+}
+.calendar-cell {
+  min-height: 120px;
+  background: #fff;
+}
+.calendar-cell.out-month {
+  background: #f8f9fa;
+  color: #adb5bd;
+}
+.calendar-cell.in-month {
+  background: #ffffff;
+}
+.calendar-date {
+  font-weight: 600;
+}
+.calendar-cell.has-workout {
+  box-shadow: inset 0 0 0 2px #dc3545;
+}
+.calendar-cell .date-num {
+  color: #212529;
+}
+.calendar-cell.has-workout .date-num {
+  color: #dc3545; /* 赤で強調 */
+}
+.calendar-cell .btn {
+  padding: .25rem .5rem;
+}
+
+@media (max-width: 768px) {
+  .calendar-cell {
+    min-height: 90px;
+  }
+}

@@ -5,21 +5,53 @@ class WorkoutsController < ApplicationController
   before_action :authorize_user!, only: [:edit, :update, :destroy]
 
   def index
-    @workouts = 
-      if user_signed_in?
-        current_user.workouts.order(performed_on: :desc).page(params[:page])
-      else
-        Workout.none
-      end
+    # カレンダー用：対象月
+    @current_month = begin
+      params[:month].present? ? Date.parse(params[:month]) : Date.current
+    rescue ArgumentError
+      Date.current
+    end
+    @start_date = @current_month.beginning_of_month
+    @end_date   = @current_month.end_of_month
+    @calendar_start = @start_date.beginning_of_week(:sunday)
+    @calendar_end   = @end_date.end_of_week(:sunday)
+
+    # 記録日を色付けするための日別件数（当月のみ）
+    @workouts_count_by_date = if user_signed_in?
+      current_user.workouts
+                   .where(performed_on: @start_date..@end_date)
+                   .group(:performed_on)
+                   .count
+    else
+      {}
+    end
+
+    # 一覧（当月分を新しい順）
+    @workouts = if user_signed_in?
+      current_user.workouts
+                  .where(performed_on: @start_date..@end_date)
+                  .order(performed_on: :desc)
+    else
+      Workout.none
+    end
   end
 
   def show
-    @exercise_sets = @workout.exercise_sets.includes(:exercise, :category).page(params[:page])
+    @exercise_sets = @workout.exercise_sets.includes(:exercise, :category).order(created_at: :asc)
     @exercise_set = @workout.exercise_sets.build
+
+    # フォーム用データ
+    @categories = Category.order(:name)
+    @exercises  = Exercise.includes(:category).order('categories.name, exercises.name')
   end
 
   def new
-    @workout = current_user.workouts.build(performed_on: Date.today)
+    default_date = begin
+      params[:date].present? ? Date.parse(params[:date]) : Date.today
+    rescue ArgumentError
+      Date.today
+    end
+    @workout = current_user.workouts.build(performed_on: default_date)
   end
 
   def create

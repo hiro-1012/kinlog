@@ -1,14 +1,106 @@
-<h1>ワークアウト一覧</h1>
-<% if user_signed_in? %>
-  <p><%= link_to "新しい記録を作る", new_workout_path %></p>
-<% end %>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">ワークアウト一覧</h1>
+        <% if user_signed_in? %>
+          <%= link_to new_workout_path, class: 'btn btn-primary' do %>
+            <i class="fas fa-plus me-2"></i>新しい記録を作る
+          <% end %>
+        <% end %>
+      </div>
 
-<ul>
-  <% @workouts.each do |w| %>
-    <li>
-      <%= link_to w.performed_on, workout_path(w) %>
-      （<%= w.user.name.presence || w.user.email %>）
-      / 合計: <%= w.total_volume.to_i %>
-    </li>
-  <% end %>
-</ul>
+      <!-- 月切り替えナビゲーション -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <% prev_month = (@current_month - 1.month).strftime('%Y-%m-01') %>
+        <% next_month = (@current_month + 1.month).strftime('%Y-%m-01') %>
+        <%= link_to "◀ 前月", workouts_path(month: prev_month), class: 'btn btn-outline-secondary btn-sm' %>
+        <h2 class="h4 mb-0"><%= @current_month.strftime('%Y年%m月') %></h2>
+        <%= link_to "翌月 ▶", workouts_path(month: next_month), class: 'btn btn-outline-secondary btn-sm' %>
+      </div>
+
+      <!-- 月間カレンダー -->
+      <div class="card mb-4">
+        <div class="table-responsive">
+          <table class="table table-bordered calendar-table mb-0">
+            <thead class="table-light">
+              <tr>
+                <% %w[日 月 火 水 木 金 土].each do |w| %>
+                  <th class="text-center"><%= w %></th>
+                <% end %>
+              </tr>
+            </thead>
+            <tbody>
+              <% date = @calendar_start %>
+              <% while date <= @calendar_end %>
+                <tr>
+                  <% 7.times do %>
+                    <% in_month = (date.month == @current_month.month) %>
+                    <% count = @workouts_count_by_date[date] || 0 %>
+                    <% classes = ["calendar-cell", (in_month ? "in-month" : "out-month"), (count > 0 ? "has-workout" : nil)].compact.join(" ") %>
+                    <td class="<%= classes %>">
+                      <div class="calendar-date d-flex justify-content-between align-items-start">
+                        <span class="date-num"><%= date.day %></span>
+                        <% if count > 0 %>
+                          <span class="badge bg-danger"><%= count %></span>
+                        <% end %>
+                      </div>
+                      <% if user_signed_in? %>
+                        <div class="mt-2 text-center">
+                          <%= link_to '記録', new_workout_path(date: date.to_s), class: 'btn btn-sm btn-outline-primary' %>
+                        </div>
+                      <% end %>
+                    </td>
+                    <% date += 1.day %>
+                  <% end %>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <% if @workouts.any? %>
+        <div class="card">
+          <div class="card-body">
+            <div class="list-group list-group-flush">
+              <% @workouts.each do |workout| %>
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                  <div>
+                    <h5 class="mb-1">
+                      <%= link_to workout.performed_on.strftime('%Y年%m月%d日'), workout_path(workout), class: 'text-decoration-none' %>
+                    </h5>
+                    <small class="text-muted">
+                      <%= workout.user.name.presence || workout.user.email %>
+                    </small>
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary fs-6">
+                      合計: <%= workout.total_volume.to_i %> kg
+                    </span>
+                    <%= link_to '記録', workout_path(workout), class: 'btn btn-sm btn-outline-primary' %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <%# ページネーション（一時的に停止）
+        <div class="d-flex justify-content-center mt-4">
+          <%= paginate @workouts, theme: 'bootstrap4' %>
+        </div>
+        %>
+      <% else %>
+        <div class="text-center py-5">
+          <i class="fas fa-dumbbell fa-3x text-muted mb-3"></i>
+          <h4 class="text-muted">まだワークアウト記録がありません</h4>
+          <p class="text-muted">最初の記録を作成してみましょう！</p>
+          <% if user_signed_in? %>
+            <%= link_to '記録を作成', new_workout_path, class: 'btn btn-primary' %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
