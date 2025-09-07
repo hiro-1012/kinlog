@@ -8,83 +8,64 @@
       <p class="text-muted">合計ボリューム: <strong><%= @workout.total_volume.to_i %> kg</strong></p>
 
       <% if user_signed_in? && @workout.user == current_user %>
-        <div class="card mb-4">
-          <div class="card-header bg-light">セットを追加</div>
-          <div class="card-body">
-            <%= form_with model: [@workout, @exercise_set], local: true, html: { class: 'row g-3' } do |f| %>
-              <div class="col-12 col-md-4">
-                <label class="form-label">部位</label>
-                <select class="form-select" data-workout-form-target="category" data-action="change->workout-form#filterExercises">
-                  <option value="">選択してください</option>
-                  <% @categories.each do |cat| %>
-                    <option value="<%= cat.id %>"><%= cat.name %></option>
-                  <% end %>
-                </select>
-              </div>
-
-              <div class="col-12 col-md-8">
-                <label class="form-label">種目</label>
-                <%= f.select :exercise_id, options_from_collection_for_select(@exercises, :id, :name), { prompt: '種目を選択' }, class: 'form-select', data: { workout_form_target: 'exercise' } %>
-                <template data-workout-form-target="exerciseOptions">
-                  <% @exercises.each do |ex| %>
-                    <option value="<%= ex.id %>" data-category-id="<%= ex.category_id %>"><%= ex.name %></option>
-                  <% end %>
-                </template>
-              </div>
-
-              <div class="col-6 col-md-3">
-                <label class="form-label">重量(kg)</label>
-                <%= f.number_field :weight, step: 0.5, min: 0, class: 'form-control', data: { action: 'input->workout-form#recalculate', workout_form_target: 'weight' } %>
-              </div>
-
-              <div class="col-6 col-md-3">
-                <label class="form-label">回数</label>
-                <%= f.number_field :reps, min: 0, class: 'form-control', data: { action: 'input->workout-form#recalculate', workout_form_target: 'reps' } %>
-              </div>
-
-              <div class="col-12 col-md-3 d-flex align-items-end">
-                <div class="form-control-plaintext">
-                  ボリューム: <strong data-workout-form-target="volume">0</strong> kg
-                </div>
-              </div>
-
-              <div class="col-12 col-md-3 d-flex align-items-end">
-                <%= f.submit '追加', class: 'btn btn-primary w-100' %>
-              </div>
-            <% end %>
-          </div>
+        <div class="mb-4 text-end">
+          <%= link_to 'セットを追加', new_workout_exercise_set_path(@workout), class: 'btn btn-primary' %>
         </div>
       <% end %>
 
-      <div class="card">
-        <div class="card-header bg-light">セット一覧</div>
-        <div class="table-responsive">
-          <table class="table table-striped mb-0">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>種目</th>
-                <th>部位</th>
-                <th>重量</th>
-                <th>回数</th>
-                <th>メモ</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @exercise_sets.each_with_index do |s, i| %>
-                <tr>
-                  <td><%= i + 1 %></td>
-                  <td><%= s.exercise.name %></td>
-                  <td><%= s.exercise.category.name %></td>
-                  <td><%= s.weight %> kg</td>
-                  <td><%= s.reps %> 回</td>
-                  <td><%= s.note %></td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
+      <% if @exercise_sets.any? %>
+        <% @exercise_sets_by_category.each do |category, sets| %>
+          <div class="card mb-4">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+              <span><%= category.name %></span>
+              <small class="text-muted">合計ボリューム: <strong><%= (sets.sum { |s| s.weight.to_f * s.reps.to_i }).to_i %> kg</strong></small>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-striped mb-0">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>種目</th>
+                    <th>重量</th>
+                    <th>回数</th>
+                    <th>ボリューム</th>
+                    <th>メモ</th>
+                    <% if user_signed_in? && @workout.user == current_user %>
+                      <th>操作</th>
+                    <% end %>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% sets.each_with_index do |s, i| %>
+                    <tr>
+                      <td><%= i + 1 %></td>
+                      <td><%= s.exercise.name %></td>
+                      <td><%= s.weight %> kg</td>
+                      <td><%= s.reps %> 回</td>
+                      <td><strong><%= (s.weight * s.reps).to_i %> kg</strong></td>
+                      <td><%= s.note %></td>
+                      <% if user_signed_in? && @workout.user == current_user %>
+                        <td>
+                          <%= link_to '削除', workout_exercise_set_path(@workout, s), 
+                              method: :delete, 
+                              class: 'btn btn-outline-danger btn-sm',
+                              data: { confirm: 'このセットを削除しますか？' } %>
+                        </td>
+                      <% end %>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="card">
+          <div class="card-body text-center text-muted py-4">
+            まだセットが記録されていません
+          </div>
         </div>
-      </div>
+      <% end %>
     </div>
   </div>
 </div>

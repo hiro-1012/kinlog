@@ -1,0 +1,88 @@
+<div class="container mt-4" data-controller="workout-form">
+  <div class="row">
+    <div class="col-12 col-lg-10 mx-auto">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">セット記録</h1>
+        <%= link_to '戻る', new_workout_exercise_set_path(@workout, category_id: @exercise.category_id), class: 'btn btn-outline-secondary btn-sm' %>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="card-title mb-0">
+              <%= @workout.performed_on.strftime('%Y年%m月%d日') %> - <%= @exercise.name %>
+            </h4>
+            <% if @previous_total_volume.present? %>
+              <div class="text-muted small">前回合計: <strong><%= @previous_total_volume %> kg</strong></div>
+            <% end %>
+          </div>
+          
+          <%= form_with url: workout_exercise_sets_path(@workout), method: :post, local: true do |f| %>
+            <%= hidden_field_tag :exercise_id, @exercise.id %>
+            
+            <div id="sets-container">
+              <% @exercise_sets.each_with_index do |exercise_set, index| %>
+                <div class="set-row mb-3 p-3 border rounded" data-set-index="<%= index %>">
+                  <div class="row g-3 align-items-end">
+                    <div class="col-2">
+                      <label class="form-label fw-bold">セット<%= index + 1 %></label>
+                    </div>
+                    <div class="col-3">
+                      <label class="form-label">重量(kg)</label>
+                      <%= number_field_tag "exercise_sets[#{index}][weight]", exercise_set.weight, 
+                          step: 0.5, min: 0, class: 'form-control set-weight', 
+                          data: { action: 'input->workout-form#recalculateSet' } %>
+                    </div>
+                    <div class="col-1 text-center">
+                      <span class="fw-bold">×</span>
+                    </div>
+                    <div class="col-3">
+                      <label class="form-label">回数</label>
+                      <%= number_field_tag "exercise_sets[#{index}][reps]", exercise_set.reps, 
+                          min: 0, class: 'form-control set-reps', 
+                          data: { action: 'input->workout-form#recalculateSet' } %>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-control-plaintext text-center">
+                        <strong class="set-volume">0</strong> kg
+                      </div>
+                    </div>
+                    <div class="col-1">
+                      <% if index >= 3 %>
+                        <button type="button" class="btn btn-outline-danger btn-sm" data-action="click->workout-form#removeSet">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      <% end %>
+                    </div>
+                  </div>
+                  <div class="row mt-2">
+                    <div class="col-12">
+                      <%= text_field_tag "exercise_sets[#{index}][note]", exercise_set.note, 
+                          class: 'form-control form-control-sm', 
+                          placeholder: 'メモ（任意）' %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-12">
+                <button type="button" class="btn btn-outline-primary btn-sm" data-action="click->workout-form#addSet">
+                  <i class="fas fa-plus me-1"></i>セットを追加
+                </button>
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col-12 d-flex gap-2">
+                <%= f.submit '記録する', class: 'btn btn-primary' %>
+                <%= link_to 'キャンセル', new_workout_exercise_set_path(@workout, category_id: @exercise.category_id), class: 'btn btn-outline-secondary' %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

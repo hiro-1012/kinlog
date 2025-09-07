@@ -24,7 +24,7 @@ Rails.application.routes.draw do
   root "home#index"
 
   resources :workouts do
-    resources :exercise_sets, only: [:create, :update, :destroy]
+    resources :exercise_sets, only: [:new, :create, :update, :destroy]
   end
 
   resources :categories, only: [:index]

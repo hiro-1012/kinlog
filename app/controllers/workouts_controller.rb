@@ -37,7 +37,9 @@ class WorkoutsController < ApplicationController
   end
 
   def show
-    @exercise_sets = @workout.exercise_sets.includes(:exercise, :category).order(created_at: :asc)
+    @exercise_sets = @workout.exercise_sets.includes(exercise: :category).order(created_at: :asc)
+    # 部位（カテゴリ）ごとにグルーピング
+    @exercise_sets_by_category = @exercise_sets.group_by { |s| s.exercise.category }
     @exercise_set = @workout.exercise_sets.build
 
     # フォーム用データ
@@ -51,14 +53,27 @@ class WorkoutsController < ApplicationController
     rescue ArgumentError
       Date.today
     end
-    @workout = current_user.workouts.build(performed_on: default_date)
+    @workout = current_user.workouts.create!(performed_on: default_date)
+    @categories = Category.order(:name)
   end
 
   def create
+    Rails.logger.info "WorkoutsController#create called with params: #{params.inspect}"
     @workout = current_user.workouts.build(workout_params)
     if @workout.save
-      redirect_to @workout, notice: "記録を作成しました"
+      Rails.logger.info "Workout saved with ID: #{@workout.id}"
+      if params[:workout][:category_id].present?
+        # 部位選択から来た場合：種目選択に遷移
+        redirect_url = new_workout_exercise_set_path(@workout, category_id: params[:workout][:category_id])
+        Rails.logger.info "Redirecting to: #{redirect_url}"
+        redirect_to redirect_url, notice: "ワークアウトを作成しました。種目を選択してください。"
+      else
+        # 通常の作成の場合：詳細画面に遷移
+        redirect_to @workout, notice: "記録を作成しました"
+      end
     else
+      Rails.logger.info "Workout save failed: #{@workout.errors.full_messages}"
+      @categories = Category.order(:name)
       render :new, status: :unprocessable_entity
     end
   end

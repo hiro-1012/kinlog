@@ -79,6 +79,11 @@
                       合計: <%= workout.total_volume.to_i %> kg
                     </span>
                     <%= link_to '記録', workout_path(workout), class: 'btn btn-sm btn-outline-primary' %>
+                    <% if user_signed_in? && workout.user_id == current_user.id %>
+                      <%= link_to '削除', workout_path(workout),
+                          data: { turbo_method: :delete, turbo_confirm: 'この記録を削除しますか？' },
+                          class: 'btn btn-sm btn-outline-danger' %>
+                    <% end %>
                   </div>
                 </div>
               <% end %>

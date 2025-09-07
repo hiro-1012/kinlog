@@ -2,18 +2,13 @@
   <div class="row">
     <div class="col-12 col-lg-8 mx-auto">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">新しいワークアウト記録</h1>
-        <%= link_to '一覧へ戻る', workouts_path, class: 'btn btn-outline-secondary btn-sm' %>
+        <h1 class="h3 mb-0">部位を選択</h1>
+        <%= link_to '戻る', workout_path(@workout), class: 'btn btn-outline-secondary btn-sm' %>
       </div>
 
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title mb-4">
-            <%= @workout.performed_on.strftime('%Y年%m月%d日') %> のトレーニング
-          </h4>
-          
-          <p class="text-muted mb-4">トレーニングする部位を選択してください</p>
-
+          <p class="text-muted mb-4">追加したい部位を選択してください</p>
           <div class="row g-3">
             <% @categories.each do |category| %>
               <div class="col-12 col-md-6 col-lg-4">
@@ -26,21 +21,16 @@
                     <p class="card-text text-muted small">
                       <%= category.exercises.count %>種類の種目
                     </p>
-                    <%= link_to '選択', 
-                        new_workout_exercise_set_path(@workout, category_id: category.id), 
-                        method: :get,
-                        class: 'btn btn-primary' %>
+                    <%= link_to '選択', new_workout_exercise_set_path(@workout, category_id: category.id), class: 'btn btn-primary' %>
                   </div>
                 </div>
               </div>
             <% end %>
-          </div>
-
-          <div class="mt-4 text-center">
-            <%= link_to 'キャンセル', workouts_path, class: 'btn btn-outline-secondary' %>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+
