@@ -12,21 +12,12 @@
 
   <body>
     <% if user_signed_in? %>
-      <!-- ゲストユーザー向けの警告メッセージ -->
-      <%= guest_user_warning %>
-      
       <!-- ナビゲーションバー -->
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
           <%= link_to '筋ログ', root_path, class: 'navbar-brand fw-bold' %>
           
           <div class="navbar-nav ms-auto">
-            <% if guest_user? %>
-              <span class="navbar-text me-3">
-                <i class="fas fa-user-clock me-1"></i>ゲストユーザー
-              </span>
-            <% end %>
-            
             <%= link_to '記録一覧', workouts_path, class: 'nav-link' %>
             <%= link_to 'ログアウト', destroy_user_session_path, 
                 data: { turbo_method: :delete }, 
@@ -36,8 +27,6 @@
       </nav>
     <% end %>
 
-    <!-- ゲストユーザー向けの登録促進メッセージ -->
-    <%= guest_user_signup_prompt %>
 
     <%= yield %>
   </body>

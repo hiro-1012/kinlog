@@ -16,9 +16,10 @@ class WorkoutsController < ApplicationController
     @calendar_start = @start_date.beginning_of_week(:sunday)
     @calendar_end   = @end_date.end_of_week(:sunday)
 
-    # 記録日を色付けするための日別件数（当月のみ）
+    # 記録日を色付けするための日別件数（当月のみ、セットが存在するもののみ）
     @workouts_count_by_date = if user_signed_in?
       current_user.workouts
+                   .joins(:exercise_sets)
                    .where(performed_on: @start_date..@end_date)
                    .group(:performed_on)
                    .count
@@ -26,10 +27,12 @@ class WorkoutsController < ApplicationController
       {}
     end
 
-    # 一覧（当月分を新しい順）
+    # 一覧（当月分を新しい順、セットが存在するもののみ）
     @workouts = if user_signed_in?
       current_user.workouts
+                  .joins(:exercise_sets)
                   .where(performed_on: @start_date..@end_date)
+                  .distinct
                   .order(performed_on: :desc)
     else
       Workout.none
@@ -53,6 +56,7 @@ class WorkoutsController < ApplicationController
     rescue ArgumentError
       Date.today
     end
+    # ワークアウトを先に保存してIDを取得
     @workout = current_user.workouts.create!(performed_on: default_date)
     @categories = Category.order(:name)
   end

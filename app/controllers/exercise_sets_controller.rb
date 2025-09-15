@@ -12,6 +12,10 @@ class ExerciseSetsController < ApplicationController
     elsif params[:exercise_id].present?
       # 種目選択から来た場合：セット記録フォームを表示
       @exercise = Exercise.find(params[:exercise_id])
+      
+      # ワークアウトが未保存の場合は先に保存
+      @workout.save! if @workout.new_record?
+      
       # 既存のセットを取得、なければ空の配列
       @exercise_sets = @workout.exercise_sets.where(exercise: @exercise).order(:created_at)
       # 最低3セット分のフォーム用オブジェクトを準備
