@@ -58,11 +58,11 @@ class ExerciseSetsController < ApplicationController
     exercise_sets_params = params.require(:exercise_sets).permit!
     
     exercise_sets_params.each do |key, set_params|
-      next if set_params[:weight].blank? && set_params[:reps].blank?
+      next if set_params[:reps].blank?
       
       exercise_set = @workout.exercise_sets.build(
         exercise: @exercise,
-        weight: set_params[:weight],
+        weight: set_params[:weight].present? ? set_params[:weight] : 0,
         reps: set_params[:reps],
         note: set_params[:note]
       )

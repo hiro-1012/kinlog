@@ -81,7 +81,7 @@ export default class extends Controller {
             <label class="form-label fw-bold">セット${newIndex + 1}</label>
           </div>
           <div class="col-3">
-            <label class="form-label">重量(kg)</label>
+            <label class="form-label">重量(kg) <small class="text-muted">任意</small></label>
             <input type="number" name="exercise_sets[${newIndex}][weight]" step="0.5" min="0" class="form-control set-weight" data-action="input->workout-form#recalculateSet">
           </div>
           <div class="col-1 text-center">

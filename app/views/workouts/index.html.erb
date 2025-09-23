@@ -49,29 +49,37 @@
                     <% workouts = @workouts_by_date[date] || [] %>
                     <% classes = ["calendar-cell", (in_month ? "in-month" : "out-month"), (count > 0 ? "has-workout" : nil)].compact.join(" ") %>
                     <td class="<%= classes %>">
-                      <div class="calendar-date d-flex justify-content-between align-items-start">
-                        <span class="date-num"><%= date.day %></span>
-                        <!-- トレーニング部位表示（右上） -->
-                        <% if workouts.any? %>
-                          <div class="d-flex flex-wrap justify-content-end">
-                            <% 
-                              # その日の全セットから部位を取得（重複除去）
-                              categories = workouts.flat_map { |w| w.exercise_sets.map { |s| s.exercise.category.name } }.uniq
-                            %>
-                            <% categories.each do |category| %>
-                              <span class="badge bg-danger me-1 mb-1" style="font-size: 0.6rem;">
-                                <%= category %>
-                              </span>
+                      <div class="calendar-date d-flex flex-column h-100">
+                        <div class="d-flex flex-column align-items-start mb-1">
+                          <div class="d-flex justify-content-between align-items-center w-100 mb-1">
+                            <span class="date-num"><%= date.day %></span>
+                            <!-- トレーニング部位表示（右上） -->
+                            <% if workouts.any? %>
+                              <div class="d-flex flex-wrap justify-content-end">
+                                <% 
+                                  # その日の全セットから部位を取得（重複除去）
+                                  categories = workouts.flat_map { |w| w.exercise_sets.map { |s| s.exercise.category.name } }.uniq
+                                %>
+                                <% categories.each do |category| %>
+                                  <span class="badge bg-danger me-1 mb-1" style="font-size: 0.6rem;">
+                                    <%= category %>
+                                  </span>
+                                <% end %>
+                              </div>
                             <% end %>
+                          </div>
+                        </div>
+                        
+                        <% if user_signed_in? %>
+                          <div class="mt-auto">
+                            <%= link_to new_workout_path(date: date.to_s), class: 'btn btn-sm btn-outline-primary w-100 vertical-text d-md-none' do %>
+                              <span class="d-block">記</span>
+                              <span class="d-block">録</span>
+                            <% end %>
+                            <%= link_to '記録', new_workout_path(date: date.to_s), class: 'btn btn-sm btn-outline-primary w-100 d-none d-md-inline-block' %>
                           </div>
                         <% end %>
                       </div>
-                      
-                      <% if user_signed_in? %>
-                        <div class="mt-2 text-center">
-                          <%= link_to '記録', new_workout_path(date: date.to_s), class: 'btn btn-sm btn-outline-primary w-100' %>
-                        </div>
-                      <% end %>
                     </td>
                     <% date += 1.day %>
                   <% end %>

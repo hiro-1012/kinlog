@@ -23,7 +23,7 @@
               <h6 class="mb-3">前回の記録（<%= @previous_date.strftime('%Y年%m月%d日') %>）</h6>
               <% @previous_sets.each_with_index do |set, index| %>
                 <div class="mb-2">
-                  セット<%= index + 1 %>　<%= set.weight %>kg × <%= set.reps %>回　<%= (set.weight * set.reps).to_i %>kg
+                  セット<%= index + 1 %>　<%= set.weight > 0 ? "#{set.weight}kg × " : "" %><%= set.reps %>回　<%= (set.weight * set.reps).to_i %>kg
                 </div>
               <% end %>
               <div class="mt-2 text-muted small">
@@ -42,12 +42,12 @@
                     <div class="col-12 col-md-2">
                       <label class="form-label fw-bold">セット<%= index + 1 %></label>
                     </div>
-                    <div class="col-6 col-md-3">
-                      <label class="form-label">重量(kg)</label>
-                      <%= number_field_tag "exercise_sets[#{index}][weight]", exercise_set.weight, 
-                          step: 0.5, min: 0, class: 'form-control set-weight', 
-                          data: { action: 'input->workout-form#recalculateSet' } %>
-                    </div>
+                                <div class="col-6 col-md-3">
+                                  <label class="form-label">重量(kg) <small class="text-muted">任意</small></label>
+                                  <%= number_field_tag "exercise_sets[#{index}][weight]", exercise_set.weight, 
+                                      step: 0.5, min: 0, class: 'form-control set-weight', 
+                                      data: { action: 'input->workout-form#recalculateSet' } %>
+                                </div>
                     <div class="col-6 col-md-1 text-center">
                       <span class="fw-bold d-none d-md-inline">×</span>
                       <span class="fw-bold d-md-none">×</span>
