@@ -19,6 +19,9 @@ Rails.application.routes.draw do
 
   resources :workouts do
     resources :exercise_sets, only: [:new, :create, :update, :destroy]
+    collection do
+      get :history
+    end
   end
 
   resources :categories, only: [:index]

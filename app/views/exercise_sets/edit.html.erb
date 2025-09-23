@@ -16,6 +16,21 @@
               <div class="text-muted small">前回合計: <strong><%= @previous_total_volume %> kg</strong></div>
             <% end %>
           </div>
+
+          <!-- 前回のセット詳細表示 -->
+          <% if @previous_sets.any? %>
+            <div class="mb-4 p-3 bg-light rounded">
+              <h6 class="mb-3">前回の記録（<%= @previous_date.strftime('%Y年%m月%d日') %>）</h6>
+              <% @previous_sets.each_with_index do |set, index| %>
+                <div class="mb-2">
+                  セット<%= index + 1 %>　<%= set.weight %>kg × <%= set.reps %>回　<%= (set.weight * set.reps).to_i %>kg
+                </div>
+              <% end %>
+              <div class="mt-2 text-muted small">
+                合計: <%= @previous_total_volume %>kg
+              </div>
+            </div>
+          <% end %>
           
           <%= form_with url: workout_exercise_sets_path(@workout), method: :post, local: true do |f| %>
             <%= hidden_field_tag :exercise_id, @exercise.id %>
@@ -23,31 +38,32 @@
             <div id="sets-container">
               <% @exercise_sets.each_with_index do |exercise_set, index| %>
                 <div class="set-row mb-3 p-3 border rounded" data-set-index="<%= index %>">
-                  <div class="row g-3 align-items-end">
-                    <div class="col-2">
+                  <div class="row g-2 g-md-3 align-items-end">
+                    <div class="col-12 col-md-2">
                       <label class="form-label fw-bold">セット<%= index + 1 %></label>
                     </div>
-                    <div class="col-3">
+                    <div class="col-6 col-md-3">
                       <label class="form-label">重量(kg)</label>
                       <%= number_field_tag "exercise_sets[#{index}][weight]", exercise_set.weight, 
                           step: 0.5, min: 0, class: 'form-control set-weight', 
                           data: { action: 'input->workout-form#recalculateSet' } %>
                     </div>
-                    <div class="col-1 text-center">
-                      <span class="fw-bold">×</span>
+                    <div class="col-6 col-md-1 text-center">
+                      <span class="fw-bold d-none d-md-inline">×</span>
+                      <span class="fw-bold d-md-none">×</span>
                     </div>
-                    <div class="col-3">
+                    <div class="col-6 col-md-3">
                       <label class="form-label">回数</label>
                       <%= number_field_tag "exercise_sets[#{index}][reps]", exercise_set.reps, 
                           min: 0, class: 'form-control set-reps', 
                           data: { action: 'input->workout-form#recalculateSet' } %>
                     </div>
-                    <div class="col-2">
+                    <div class="col-6 col-md-2">
                       <div class="form-control-plaintext text-center">
                         <strong class="set-volume">0</strong> kg
                       </div>
                     </div>
-                    <div class="col-1">
+                    <div class="col-12 col-md-1 text-center text-md-start">
                       <% if index >= 3 %>
                         <button type="button" class="btn btn-outline-danger btn-sm" data-action="click->workout-form#removeSet">
                           <i class="fas fa-trash"></i>

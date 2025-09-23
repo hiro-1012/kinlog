@@ -27,13 +27,39 @@ class WorkoutsController < ApplicationController
       {}
     end
 
+    # 各日のトレーニング部位データ（カレンダー表示用）
+    @workouts_by_date = if user_signed_in?
+      current_user.workouts
+                   .joins(:exercise_sets)
+                   .includes(exercise_sets: [:exercise, exercise: :category])
+                   .where(performed_on: @start_date..@end_date)
+                   .group_by(&:performed_on)
+    else
+      {}
+    end
+
     # 一覧（当月分を新しい順、セットが存在するもののみ）
     @workouts = if user_signed_in?
       current_user.workouts
                   .joins(:exercise_sets)
+                  .includes(exercise_sets: [:exercise, exercise: :category])
                   .where(performed_on: @start_date..@end_date)
                   .distinct
                   .order(performed_on: :desc)
+    else
+      Workout.none
+    end
+  end
+
+  def history
+    # 履歴専用ページ：全期間のトレーニング履歴を表示
+    @workouts = if user_signed_in?
+      current_user.workouts
+                  .joins(:exercise_sets)
+                  .includes(exercise_sets: [:exercise, exercise: :category])
+                  .distinct
+                  .order(performed_on: :desc)
+                  .limit(50) # 最新50件に制限
     else
       Workout.none
     end

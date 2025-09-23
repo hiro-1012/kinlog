@@ -21,7 +21,7 @@ class ExerciseSetsController < ApplicationController
       # 最低3セット分のフォーム用オブジェクトを準備
       @exercise_sets = @exercise_sets.presence || Array.new(3) { @workout.exercise_sets.build(exercise: @exercise) }
 
-      # 前回の同種目の合計ボリューム（直近の別日ワークアウト）
+      # 前回の同種目のセット詳細（直近の別日ワークアウト）
       previous_workout = current_user.workouts
                                     .where("performed_on < ?", @workout.performed_on)
                                     .joins(:exercise_sets)
@@ -30,11 +30,15 @@ class ExerciseSetsController < ApplicationController
                                     .distinct
                                     .first
       if previous_workout
-        @previous_total_volume = previous_workout.exercise_sets
-                                                .where(exercise: @exercise)
-                                                .sum("weight * reps").to_i
+        @previous_sets = previous_workout.exercise_sets
+                                        .where(exercise: @exercise)
+                                        .order(:created_at)
+        @previous_total_volume = @previous_sets.sum("weight * reps").to_i
+        @previous_date = previous_workout.performed_on
       else
+        @previous_sets = []
         @previous_total_volume = nil
+        @previous_date = nil
       end
       render :edit
     else

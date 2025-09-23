@@ -1,0 +1,210 @@
+/* レスポンシブ対応のカスタムスタイル - モバイル専用 */
+
+/* モバイル専用の調整（768px以下） */
+@media (max-width: 767.98px) {
+  /* コンテナの余白調整 */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* カードの余白調整 */
+  .card {
+    margin-bottom: 1rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  /* テーブルの横スクロール対応 */
+  .table-responsive {
+    border: none;
+  }
+
+  /* 履歴テーブルの調整 */
+  .table-sm th,
+  .table-sm td {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  .table-sm th {
+    font-weight: 600;
+  }
+
+  /* 履歴カードの調整 */
+  .list-group-item {
+    border-left: none;
+    border-right: none;
+  }
+
+  .list-group-item:first-child {
+    border-top: none;
+  }
+
+  .list-group-item:last-child {
+    border-bottom: none;
+  }
+
+  /* カレンダーテーブルの調整 */
+  .calendar-table {
+    font-size: 0.875rem;
+  }
+
+  .calendar-cell {
+    padding: 0.5rem 0.25rem;
+    min-height: 120px; /* 部位表示のため高さを増加 */
+    vertical-align: top;
+  }
+
+  .calendar-date {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .date-num {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .badge {
+    font-size: 0.75rem;
+  }
+
+  /* ボタンの調整 */
+  .btn {
+    min-height: 44px; /* タッチフレンドリーなサイズ */
+  }
+
+  .btn-sm {
+    min-height: 36px;
+    padding: 0.5rem 1rem;
+  }
+
+  /* フォームの調整 */
+  .form-control {
+    min-height: 44px;
+    font-size: 16px; /* iOSのズーム防止 */
+  }
+
+  .form-label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  /* セット記録画面の調整 */
+  .set-row {
+    padding: 1rem;
+  }
+
+  .set-row .row {
+    margin: 0;
+  }
+
+  .set-row .col-6 {
+    margin-bottom: 0.5rem;
+  }
+
+  /* 前回記録表示の調整 */
+  .bg-light h6 {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  /* ナビゲーションバーの調整 */
+  .navbar-nav {
+    text-align: center;
+  }
+
+  .navbar-nav .nav-link {
+    padding: 0.75rem 1rem;
+  }
+
+  /* リストアイテムの調整 */
+  .list-group-item {
+    padding: 1rem;
+  }
+
+  /* モーダルやアラートの調整 */
+  .alert {
+    margin: 0.5rem;
+    border-radius: 0.5rem;
+  }
+
+  /* テキストサイズの調整 */
+  h1, .h1 { font-size: 1.75rem; }
+  h2, .h2 { font-size: 1.5rem; }
+  h3, .h3 { font-size: 1.25rem; }
+  h4, .h4 { font-size: 1.125rem; }
+  h5, .h5 { font-size: 1rem; }
+
+  /* 余白の調整 */
+  .mb-4 { margin-bottom: 1.5rem !important; }
+  .mb-3 { margin-bottom: 1rem !important; }
+  .mt-4 { margin-top: 1.5rem !important; }
+  .mt-3 { margin-top: 1rem !important; }
+}
+
+/* デスクトップ用のカレンダー調整 */
+@media (min-width: 768px) {
+  .calendar-cell {
+    min-height: 140px; /* デスクトップでも部位表示に対応 */
+  }
+}
+
+/* 横画面（ランドスケープ）対応 */
+@media (max-width: 767.98px) and (orientation: landscape) {
+  .hero .container {
+    padding: 1rem;
+    margin: 0.5rem;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero-lead {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero .btn {
+    padding: 0.5rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* 高解像度ディスプレイ対応 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .hero {
+    background-image: url('/assets/workout-background.png');
+    background-size: cover;
+  }
+}
+
+/* ダークモード対応（将来の拡張用） */
+@media (prefers-color-scheme: dark) {
+  .card {
+    background-color: #2d3748;
+    border-color: #4a5568;
+  }
+
+  .card-header {
+    background-color: #4a5568;
+    border-bottom-color: #718096;
+  }
+}
+
+/* アニメーションの調整（モバイルでは軽量化） */
+@media (max-width: 767.98px) {
+  .hero .container:hover {
+    transform: none;
+  }
+
+  .hero .btn:hover {
+    transform: translateY(-1px) scale(1.02);
+  }
+}

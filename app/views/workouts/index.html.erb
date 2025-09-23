@@ -4,11 +4,20 @@
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h2 mb-0">ワークアウト一覧</h1>
         <% if user_signed_in? %>
-          <%= link_to new_workout_path, class: 'btn btn-primary' do %>
+          <%= link_to new_workout_path, class: 'btn btn-primary d-none d-md-inline-block' do %>
             <i class="fas fa-plus me-2"></i>新しい記録を作る
           <% end %>
         <% end %>
       </div>
+      
+      <!-- モバイル用のボタン -->
+      <% if user_signed_in? %>
+        <div class="d-block d-md-none mb-4">
+          <%= link_to new_workout_path, class: 'btn btn-primary w-100' do %>
+            <i class="fas fa-plus me-2"></i>新しい記録を作る
+          <% end %>
+        </div>
+      <% end %>
 
       <!-- 月切り替えナビゲーション -->
       <div class="d-flex justify-content-between align-items-center mb-3">
@@ -37,17 +46,30 @@
                   <% 7.times do %>
                     <% in_month = (date.month == @current_month.month) %>
                     <% count = @workouts_count_by_date[date] || 0 %>
+                    <% workouts = @workouts_by_date[date] || [] %>
                     <% classes = ["calendar-cell", (in_month ? "in-month" : "out-month"), (count > 0 ? "has-workout" : nil)].compact.join(" ") %>
                     <td class="<%= classes %>">
                       <div class="calendar-date d-flex justify-content-between align-items-start">
                         <span class="date-num"><%= date.day %></span>
-                        <% if count > 0 %>
-                          <span class="badge bg-danger"><%= count %></span>
+                        <!-- トレーニング部位表示（右上） -->
+                        <% if workouts.any? %>
+                          <div class="d-flex flex-wrap justify-content-end">
+                            <% 
+                              # その日の全セットから部位を取得（重複除去）
+                              categories = workouts.flat_map { |w| w.exercise_sets.map { |s| s.exercise.category.name } }.uniq
+                            %>
+                            <% categories.each do |category| %>
+                              <span class="badge bg-danger me-1 mb-1" style="font-size: 0.6rem;">
+                                <%= category %>
+                              </span>
+                            <% end %>
+                          </div>
                         <% end %>
                       </div>
+                      
                       <% if user_signed_in? %>
                         <div class="mt-2 text-center">
-                          <%= link_to '記録', new_workout_path(date: date.to_s), class: 'btn btn-sm btn-outline-primary' %>
+                          <%= link_to '記録', new_workout_path(date: date.to_s), class: 'btn btn-sm btn-outline-primary w-100' %>
                         </div>
                       <% end %>
                     </td>
@@ -62,29 +84,65 @@
 
       <% if @workouts.any? %>
         <div class="card">
-          <div class="card-body">
+          <div class="card-header bg-light">
+            <h5 class="mb-0">トレーニング履歴</h5>
+          </div>
+          <div class="card-body p-0">
             <div class="list-group list-group-flush">
               <% @workouts.each do |workout| %>
-                <div class="list-group-item d-flex justify-content-between align-items-center">
-                  <div>
-                    <h5 class="mb-1">
+                <div class="list-group-item">
+                  <!-- ワークアウトヘッダー -->
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="mb-0">
                       <%= link_to workout.performed_on.strftime('%Y年%m月%d日'), workout_path(workout), class: 'text-decoration-none' %>
                     </h5>
-                    <small class="text-muted">
-                      <%= workout.user.name.presence || workout.user.email %>
-                    </small>
+                    <div class="d-flex align-items-center gap-2">
+                      <span class="badge bg-primary fs-6">
+                        合計: <%= workout.total_volume.to_i %> kg
+                      </span>
+                      <% if user_signed_in? && workout.user_id == current_user.id %>
+                        <%= link_to '削除', workout_path(workout),
+                            data: { turbo_method: :delete, turbo_confirm: 'この記録を削除しますか？' },
+                            class: 'btn btn-sm btn-outline-danger' %>
+                      <% end %>
+                    </div>
                   </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-primary fs-6">
-                      合計: <%= workout.total_volume.to_i %> kg
-                    </span>
-                    <%= link_to '記録', workout_path(workout), class: 'btn btn-sm btn-outline-primary' %>
-                    <% if user_signed_in? && workout.user_id == current_user.id %>
-                      <%= link_to '削除', workout_path(workout),
-                          data: { turbo_method: :delete, turbo_confirm: 'この記録を削除しますか？' },
-                          class: 'btn btn-sm btn-outline-danger' %>
-                    <% end %>
-                  </div>
+                  
+                  <!-- セット記録一覧 -->
+                  <% if workout.exercise_sets.any? %>
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="table-responsive">
+                          <table class="table table-sm mb-0">
+                            <thead class="table-light">
+                              <tr>
+                                <th>種目</th>
+                                <th>部位</th>
+                                <th>重量</th>
+                                <th>回数</th>
+                                <th>ボリューム</th>
+                                <th>メモ</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <% workout.exercise_sets.includes(:exercise, exercise: :category).each do |set| %>
+                                <tr>
+                                  <td><%= set.exercise.name %></td>
+                                  <td><%= set.exercise.category.name %></td>
+                                  <td><%= set.weight %> kg</td>
+                                  <td><%= set.reps %> 回</td>
+                                  <td><strong><%= (set.weight * set.reps).to_i %> kg</strong></td>
+                                  <td><%= set.note.presence || '-' %></td>
+                                </tr>
+                              <% end %>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  <% else %>
+                    <p class="text-muted mb-0">セット記録がありません</p>
+                  <% end %>
                 </div>
               <% end %>
             </div>
