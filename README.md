@@ -50,7 +50,7 @@
 - 記録すると、ボリュームが自動計算され、その日の合計ボリュームが表示される
 <img width="1548" height="839" alt="スクリーンショット 2025-09-23 15 25 19" src="https://github.com/user-attachments/assets/034007af-959b-49da-a5d8-3ed0a79681df" />
 
-- 前回のセット履歴を確認することで、ボリューム更新を目指していく
+- 前回のセット履歴を確認することで、ボリューム更新を目指していく
 <img width="1540" height="927" alt="スクリーンショット 2025-09-23 15 30 56" src="https://github.com/user-attachments/assets/4772ad7e-1cf5-44c8-ba0e-275f5ae7375a" />
 
 
