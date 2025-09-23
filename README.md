@@ -37,10 +37,22 @@
 - 過去のトレーニングボリュームを見返してモチベーションアップ
 
 # 利用方法
-- 種目名、重量、回数、セット数を入力
-- 入力と同時に今回の総ボリュームを自動計算
-- 保存すると履歴ページに記録
-- 前回ボリュームと比較して成長を確認
+- 日付を選択し、新しいワークアウト記録を作成
+<img width="1657" height="919" alt="スクリーンショット 2025-09-23 14 25 57" src="https://github.com/user-attachments/assets/e8888c29-cb90-4bd7-aa3c-027315f7e6fe" />
+
+- トレーニングする部位、種目を選択
+<img width="1596" height="863" alt="スクリーンショット 2025-09-23 15 19 22" src="https://github.com/user-attachments/assets/50da734e-f358-45a5-896e-a5db1e195563" />
+<img width="1590" height="801" alt="スクリーンショット 2025-09-23 15 21 05" src="https://github.com/user-attachments/assets/e65c68cb-df5e-4a4c-a07b-0d5a53cb1a89" />
+
+- 重量、回数、メモ（任意）を入力してセットを記録
+<img width="1630" height="893" alt="スクリーンショット 2025-09-23 15 24 06" src="https://github.com/user-attachments/assets/1dc5cc64-ff85-48b8-a92e-2594e3c97b82" />
+
+- 記録すると、ボリュームが自動計算され、その日の合計ボリュームが表示される
+<img width="1548" height="839" alt="スクリーンショット 2025-09-23 15 25 19" src="https://github.com/user-attachments/assets/034007af-959b-49da-a5d8-3ed0a79681df" />
+
+- 前回のセット履歴を確認することで、ボリューム更新を目指していく
+<img width="1540" height="927" alt="スクリーンショット 2025-09-23 15 30 56" src="https://github.com/user-attachments/assets/4772ad7e-1cf5-44c8-ba0e-275f5ae7375a" />
+
 
 # 機能一覧
 - 基本的なCRUD機能  
