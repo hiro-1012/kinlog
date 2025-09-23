@@ -7,7 +7,7 @@
   padding: 0;
   background: 
     linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4)),
-    url('/assets/workout-background.png') center/cover no-repeat;
+    image-url('workout-background.png') center/cover no-repeat;
   color: #fff;
   position: relative;
   overflow: hidden;
