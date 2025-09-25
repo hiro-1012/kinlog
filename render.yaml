@@ -1,0 +1,24 @@
+databases:
+  - name: kinlog_database
+    databaseName: kinlog_database
+    user: kinlog_user
+    region: Oregon
+
+services:
+  - type: web
+    name: kinlog_database
+    env: ruby
+    region: Oregon
+    plan: free
+    buildCommand: "./bin/render-build.sh"
+    startCommand: "bundle exec puma -C config/puma.rb"
+    preDeployCommand: ./bin/rails db:migrate
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: kinlog_database
+          property: connectionString
+      - key: RAILS_MASTER_KEY
+        sync: false
+      - key: WEB_CONCURRENCY
+        value: 2
