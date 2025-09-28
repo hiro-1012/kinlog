@@ -2,3 +2,6 @@
 @import 'home';
 @import 'responsive';
 
+html[data-bs-theme="light"] {
+    --bs-body-bg: #fff !important;
+  }
