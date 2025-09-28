@@ -247,7 +247,7 @@
 /* 高解像度ディスプレイ対応 */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .hero {
-    background-image: url('/assets/workout-background.png');
+    background-image: image-url('workout-background.png');
     background-size: cover;
   }
 }
